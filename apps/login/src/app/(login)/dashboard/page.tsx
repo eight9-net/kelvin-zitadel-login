@@ -21,6 +21,7 @@ import { getLocale, getTranslations } from "next-intl/server";
 import { headers } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { exit } from "process";
 
 async function loadSession(
   serviceUrl: string,
@@ -33,6 +34,7 @@ async function loadSession(
   if (requestId && requestId.startsWith("oidc_")) {
     return createCallback({
       serviceUrl,
+
       req: create(CreateCallbackRequestSchema, {
         authRequestId: requestId,
         callbackKind: {
@@ -66,6 +68,7 @@ async function loadSession(
 
   return getSession({
     serviceUrl,
+
     sessionId: recent.id,
     sessionToken: recent.token,
   }).then((response) => {
@@ -78,32 +81,38 @@ async function loadSession(
 export default async function Page(props: { searchParams: Promise<any> }) {
   const searchParams = await props.searchParams;
   const locale = getLocale();
-  const t = await getTranslations({ locale, namespace: "signedin" });
+  const t = await getTranslations({ locale, namespace: "dashboard" });
 
   const _headers = await headers();
   const { serviceUrl } = getServiceUrlFromHeaders(_headers);
 
   const { loginName, requestId, organization } = searchParams;
-  const sessionFactors = await loadSession(serviceUrl, loginName, requestId);
+
+  const sessionFactors = await loadSession(
+    serviceUrl,
+
+    loginName,
+    requestId,
+  );
 
   const branding = await getBrandingSettings({
     serviceUrl,
+
     organization,
   });
 
-  let loginSettings;
-  if (!requestId) {
-    loginSettings = await getLoginSettings({
-      serviceUrl,
-
-      organization: sessionFactors?.factors?.user?.organizationId,
-    });
-  }
-
   const loginNameParam = loginName ?? sessionFactors?.factors?.user?.loginName;
+
+  const loginSettings = await getLoginSettings({
+    serviceUrl,
+
+    organization: sessionFactors?.factors?.user?.organizationId,
+  });
+
 
   return (
     <DynamicTheme branding={branding}>
+
       <div className="flex flex-col items-center space-y-4">
         <h1>
           {t("title", { user: sessionFactors?.factors?.user?.displayName })}
@@ -125,7 +134,7 @@ export default async function Page(props: { searchParams: Promise<any> }) {
           <div className="mt-8 flex w-full flex-row items-center">
             <span className="flex-grow"></span>
 
-            <Link href={loginSettings?.defaultRedirectUri}>
+            {/* <Link href={loginSettings?.defaultRedirectUri}>
               <Button
                 type="submit"
                 className="self-end"
@@ -133,7 +142,7 @@ export default async function Page(props: { searchParams: Promise<any> }) {
               >
                 {t("continue")}
               </Button>
-            </Link>
+            </Link> */}
           </div>
         )}
       </div>
