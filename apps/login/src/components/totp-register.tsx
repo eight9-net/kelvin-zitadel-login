@@ -121,6 +121,12 @@ export function TotpRegister({
 
             <CopyToClipboard value={uri}></CopyToClipboard>
           </div>
+
+          <div className="mb-4 w-96 flex text-sm my-2 border rounded-lg px-4 py-2 pr-2 border-divider-light dark:border-divider-dark">
+            {secret}
+            <CopyToClipboard value={secret}></CopyToClipboard>
+          </div>
+
           <form className="w-full">
             <div className="">
               <TextInput
