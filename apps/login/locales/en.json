@@ -13,6 +13,11 @@
     "description": "Enter your login data.",
     "register": "Register new user"
   },
+  "dashboard": {
+    "title": "Auth Dashboard",
+    "description": "Welcome to the Kelvin Education App Dashboard.",
+    "continue": "Continue"
+  },
   "password": {
     "verify": {
       "title": "Password",

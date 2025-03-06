@@ -1,18 +1,29 @@
 import Link from "next/link";
 
-export function SelfServiceMenu({ sessionId }: { sessionId: string }) {
+export function SelfServiceMenu({ sessionId, canChangePassword, loginName }: { sessionId: string, canChangePassword: boolean, loginName: string }) {
   const list: any[] = [];
 
   // if (!!config.selfservice.change_password.enabled) {
-  //   list.push({
-  //     link:
-  //       `/me/change-password?` +
-  //       new URLSearchParams({
-  //         sessionId: sessionId,
-  //       }),
-  //     name: "Change password",
-  //   });
-  // }
+  if (canChangePassword) {
+    list.push({
+      link:
+        `/password/change?` +
+        new URLSearchParams({
+          loginName: loginName,
+        }),
+      name: "Change password",
+    });
+    list.push({
+      link:
+        `/mfa/change?` +
+        new URLSearchParams({
+          loginName: loginName,
+        }),
+      name: "Multi-Factor Settings",
+    });
+
+  }
+
 
   return (
     <div className="w-full flex flex-col space-y-2">

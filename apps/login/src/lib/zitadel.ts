@@ -186,6 +186,21 @@ export async function registerTOTP({
   return userService.registerTOTP({ userId }, {});
 }
 
+export async function removeTOTP({
+  serviceUrl,
+  userId,
+}: {
+  serviceUrl: string;
+  userId: string;
+}) {
+  const userService: Client<typeof UserService> = await createServiceForHost(
+    UserService,
+    serviceUrl,
+  );
+
+  return userService.removeTOTP({ userId }, {});
+}
+
 export async function getGeneralSettings({
   serviceUrl,
 }: {
@@ -1245,6 +1260,33 @@ export async function registerU2F({
 /**
  *
  * @param host
+ * @param userId the id of the user where the email should be set
+ * @param u2fId the u2fId
+ * @returns the newly set email
+ */
+export async function removeU2F({
+  serviceUrl,
+  userId,
+  u2fId,
+}: {
+  serviceUrl: string;
+  userId: string;
+  u2fId: string;
+}) {
+  const userService: Client<typeof UserService> = await createServiceForHost(
+    UserService,
+    serviceUrl,
+  );
+
+  return userService.removeU2F({
+    userId,
+    u2fId,
+  });
+}
+
+/**
+ *
+ * @param host
  * @param request the request object for verifying U2F registration
  * @returns the result of the verification
  */
@@ -1360,6 +1402,29 @@ export async function listAuthenticationMethodTypes({
   );
 
   return userService.listAuthenticationMethodTypes({
+    userId,
+  });
+}
+
+/**
+ *
+ * @param host
+ * @param userId the id of the user
+ * @returns the list of authentication factors
+ */
+export async function listAuthenticationFactors({
+  serviceUrl,
+  userId,
+}: {
+  serviceUrl: string;
+  userId: string;
+}) {
+  const userService: Client<typeof UserService> = await createServiceForHost(
+    UserService,
+    serviceUrl,
+  );
+
+  return userService.listAuthenticationFactors({
     userId,
   });
 }
