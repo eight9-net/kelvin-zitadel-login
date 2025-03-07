@@ -29,7 +29,12 @@ async function loadSession(
   loginName: string,
   requestId?: string,
 ) {
-  const recent = await getMostRecentCookieWithLoginname({ loginName });
+  let recent: (any) = undefined;
+  try {
+    recent = await getMostRecentCookieWithLoginname({ loginName });
+  } catch (e) {
+    return redirect('loginname');
+  }
 
   if (requestId && requestId.startsWith("oidc_")) {
     return createCallback({
@@ -95,6 +100,10 @@ export default async function Page(props: { searchParams: Promise<any> }) {
     requestId,
   );
 
+  if (!sessionFactors?.factors?.user?.loginName) {
+    redirect("/loginname");
+  }
+
   const branding = await getBrandingSettings({
     serviceUrl,
 
@@ -130,21 +139,6 @@ export default async function Page(props: { searchParams: Promise<any> }) {
           <SelfServiceMenu sessionId={sessionFactors?.id} canChangePassword={loginSettings?.allowUsernamePassword??false} loginName={loginNameParam} />
         )}
 
-        {loginSettings?.defaultRedirectUri && (
-          <div className="mt-8 flex w-full flex-row items-center">
-            <span className="flex-grow"></span>
-
-            {/* <Link href={loginSettings?.defaultRedirectUri}>
-              <Button
-                type="submit"
-                className="self-end"
-                variant={ButtonVariants.Primary}
-              >
-                {t("continue")}
-              </Button>
-            </Link> */}
-          </div>
-        )}
       </div>
     </DynamicTheme>
   );

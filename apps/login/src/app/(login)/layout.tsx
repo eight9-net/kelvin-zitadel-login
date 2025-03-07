@@ -9,6 +9,8 @@ import { Analytics } from "@vercel/analytics/react";
 import { Lato } from "next/font/google";
 import { ReactNode, Suspense } from "react";
 
+import { LogoutLink } from "@/components/logout-link";
+
 const lato = Lato({
   weight: ["400", "700", "900"],
   subsets: ["latin"],
@@ -34,7 +36,7 @@ export default async function RootLayout({
                     <div className="h-40"></div>
                   </Skeleton>
                   <div className="flex flex-row justify-end py-4 items-center space-x-4">
-                    <Theme />
+                    {/* <Theme /> */}
                   </div>
                 </div>
               </div>
@@ -49,7 +51,7 @@ export default async function RootLayout({
                   <div className="flex flex-row justify-end py-4 items-center space-x-4">
                     {/* <LanguageSwitcher />
                     <Theme /> */}
-                    Logout?
+                    <LogoutLink />
                   </div>
                 </div>
               </div>
