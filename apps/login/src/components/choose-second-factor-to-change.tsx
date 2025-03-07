@@ -94,23 +94,29 @@ const DELSF = (alreadyAdded: boolean, af_type: number, link: string, authFactors
         {loginSettings.secondFactors.map((factor) => {
           switch (factor) {
             case SecondFactorType.OTP:
-              return [
-                <div className="mt-6"></div>,
+              return <div>
+                <div className="mt-6"></div>
+                + {
                 TOTP(
                   userMethods.includes(AuthenticationMethodType.TOTP),
                   "/otp/time-based/set?" + params,
-                ),
+                )
+                } + {
                 DELSF(userMethods.includes(AuthenticationMethodType.TOTP), AuthenticationMethodType.TOTP, "/otp/time-based/remove?" + params, authFactors)
-              ];
+                }
+              </div>;
             case SecondFactorType.U2F:
-              return [
-                <div className="mt-6"></div>,
-                U2F(
-                  userMethods.includes(AuthenticationMethodType.U2F),
-                  "/u2f/set?" + params,
-                ),
-                DELSF(userMethods.includes(AuthenticationMethodType.U2F), AuthenticationMethodType.U2F, "/otp/u2f/remove?" + params, authFactors)
-              ];
+              return <div>
+                <div className="mt-6"></div>
+                + {
+                  U2F(
+                    userMethods.includes(AuthenticationMethodType.U2F),
+                    "/u2f/set?" + params,
+                  )
+                } + {
+                  DELSF(userMethods.includes(AuthenticationMethodType.U2F), AuthenticationMethodType.U2F, "/otp/u2f/remove?" + params, authFactors)
+                }
+              </div>
             case SecondFactorType.OTP_EMAIL:
               return (
                 emailVerified &&
