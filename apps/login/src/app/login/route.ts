@@ -401,8 +401,6 @@ export async function GET(request: NextRequest) {
     } else {
       const loginNameUrl = constructUrl(request, "/loginname");
 
-      // const loginNameUrl = new URL("/loginname", request.url);
-      // loginNameUrl.port = '';
       loginNameUrl.searchParams.set("requestId", requestId);
       if (authRequest?.loginHint) {
         loginNameUrl.searchParams.set("loginName", authRequest.loginHint);
