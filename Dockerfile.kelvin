@@ -16,33 +16,37 @@ RUN mkdir -p /.env-file && touch /.env-file/.env && chown -R nextjs:nodejs /.env
 # COPY --chown=nextjs:nodejs ./docker/apps/login/.next/static ./apps/login/.next/static
 # COPY --chown=nextjs:nodejs ./docker/apps/login/public ./apps/login/public
 
-COPY packages /app/packages
+ADD packages /app/packages
+ADD apps /app/apps
 COPY package.json /app
 COPY .npmrc /app
 COPY .nvmrc /app
 COPY turbo.json /app
 COPY pnpm-lock.yaml /app
-COPY pnpm-workspace.yaml /app
-COPY apps /app/apps
+COPY ./pnpm-workspace.yaml /app
+COPY launch.sh /app
 
 
-FROM base AS prod-deps
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --frozen-lockfile
+
+# FROM base AS prod-deps
+# RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --frozen-lockfile
 
 FROM base AS build
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store cd /app/apps/login && pnpm install --frozen-lockfile
 RUN pnpm run build
-
-RUN ls -la /app
 
 FROM base
 
-COPY --from=build /app/apps ./app/apps
+COPY --from=build --chown=nextjs:nodejs /app/apps /app/apps
+COPY --from=build --chown=nextjs:nodejs /pnpm /pnpm
+COPY --from=build --chown=nextjs:nodejs /app/node_modules /app/node_modules
+
+RUN chown -R nextjs:nodejs /app
 
 USER nextjs
 
-ENV HOSTNAME="0.0.0.0"
 EXPOSE 3100
 
-# CMD ["/bin/sh", "-c", " set -o allexport && . /.env-file/.env && set +o allexport && node /app/server.js"]
-CMD ["pnpm", "start", "--port=3100", "--hostname=kelvin-zitadel-ui.dev.eight9.net"]
+# CMD ["pnpm", "start", "--port=3100", "--hostname=kelvin-zitadel-ui.dev.eight9.net"]
+ENTRYPOINT [ "" ]
