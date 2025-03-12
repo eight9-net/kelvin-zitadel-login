@@ -11,7 +11,7 @@ networks:
 services:
     kauth_ui:
       container_name: kauth_ui_1
-      image: 009160068722.dkr.ecr.us-west-2.amazonaws.com/kauth-zitadel-ui:f08e967b422fe1b71413b3847e28d69603ec2921
+      image: 009160068722.dkr.ecr.us-west-2.amazonaws.com/kauth-zitadel-ui:kelvin
       volumes:
         - ./apps/login/.env.local:/apps/login/.env.local
         - ./launch.sh:/app/launch.sh
