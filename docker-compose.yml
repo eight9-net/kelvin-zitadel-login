@@ -13,7 +13,7 @@ services:
       container_name: kauth_ui_1
       image: 009160068722.dkr.ecr.us-west-2.amazonaws.com/kauth-zitadel-ui:kelvin
       volumes:
-        - ./apps/login/.env.local:/apps/login/.env.local
+        - ./apps/login/.env.local:/app/apps/login/.env.local
         - ./launch.sh:/app/launch.sh
       environment:
         - HOSTNAME=0.0.0.0
