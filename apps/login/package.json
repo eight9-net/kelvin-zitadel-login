@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "next dev --turbopack --port=3100 --hostname=0.0.0.0",
     "test": "concurrently --timings --kill-others-on-fail 'npm:test:unit' 'npm:test:integration'",
     "test:watch": "concurrently --kill-others 'npm:test:unit:watch' 'npm:test:integration:watch'",
     "test:unit": "vitest",
