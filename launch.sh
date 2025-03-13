@@ -14,6 +14,4 @@ if [ -d /app/apps/login/ ]; then
   echo "ZITADEL_SERVICE_USER_TOKEN=\"${KAUTH_UI_SERVICE_TOKEN}\"" >> /app/apps/login/.env.local
 fi
 
-cat /app/apps/login/.env.local
-
 pnpm start:built -- --port=$PORT --hostname=$HOSTNAME
