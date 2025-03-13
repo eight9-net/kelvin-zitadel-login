@@ -20,6 +20,7 @@ export function DefaultTags() {
         sizes="16x16"
         type="image/png"
       />
+      <link rel="icon" href="/favicon/kelvin-icon.svg" type="image/svg+xml" />
       <link href="/favicon/site.webmanifest" rel="manifest" />
       {/* <link
         color="#000000"
