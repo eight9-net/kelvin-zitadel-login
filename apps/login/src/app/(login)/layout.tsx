@@ -3,6 +3,7 @@ import "@/styles/globals.scss";
 import { LanguageProvider } from "@/components/language-provider";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { Skeleton } from "@/components/skeleton";
+import { DefaultTags } from "@/components/default-tags";
 import { Theme } from "@/components/theme";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Analytics } from "@vercel/analytics/react";
@@ -23,7 +24,9 @@ export default async function RootLayout({
 }) {
   return (
     <html className={`${lato.className}`} suppressHydrationWarning>
-      <head />
+      <head>
+        <DefaultTags />
+      </head>
       <body>
         <ThemeProvider>
           <Suspense

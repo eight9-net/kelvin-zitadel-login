@@ -22,12 +22,6 @@ export function DefaultTags() {
       />
       <link rel="icon" href="/favicon/kelvin-icon.svg" type="image/svg+xml" />
       <link href="/favicon/site.webmanifest" rel="manifest" />
-      {/* <link
-        color="#000000"
-        href="/favicon/safari-pinned-tab.svg"
-        rel="mask-icon"
-      /> */}
-      <link href="/favicon/favicon.ico" rel="shortcut icon" />
     </>
   );
 }
