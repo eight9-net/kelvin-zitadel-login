@@ -21,7 +21,7 @@ import { getLocale, getTranslations } from "next-intl/server";
 import { headers } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { exit } from "process";
+
 
 async function loadSession(
   serviceUrl: string,
@@ -118,6 +118,7 @@ export default async function Page(props: { searchParams: Promise<any> }) {
     organization: sessionFactors?.factors?.user?.organizationId,
   });
 
+  console.log("sessionFactors", sessionFactors);
 
   return (
     <DynamicTheme branding={branding}>
