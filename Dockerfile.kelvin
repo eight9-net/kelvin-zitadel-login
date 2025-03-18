@@ -3,7 +3,7 @@ FROM node:20-alpine AS base
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 RUN apk add --no-cache git curl
-RUN npm install -g pnpm@10.6.2
+RUN npm install -g pnpm@10.6.20
 
 WORKDIR /app
 RUN addgroup --system --gid 1001 nodejs

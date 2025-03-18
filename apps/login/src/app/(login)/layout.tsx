@@ -10,7 +10,7 @@ import { Analytics } from "@vercel/analytics/react";
 import { Lato } from "next/font/google";
 import { ReactNode, Suspense } from "react";
 
-import { LogoutLink } from "@/components/logout-link";
+import { UserNavLinks } from "@/components/user-nav-links";
 
 const lato = Lato({
   weight: ["400", "700", "900"],
@@ -54,7 +54,7 @@ export default async function RootLayout({
                   <div className="flex flex-row justify-end py-4 items-center space-x-4">
                     {/* <LanguageSwitcher />
                     <Theme /> */}
-                    <LogoutLink />
+                    <UserNavLinks />
                   </div>
                 </div>
               </div>
