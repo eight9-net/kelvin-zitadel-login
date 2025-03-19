@@ -34,7 +34,7 @@ COPY launch.sh /app
 FROM base AS build
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store cd /app/apps/login && pnpm install --frozen-lockfile
-RUN pnpm run build
+RUN pnpm build
 
 FROM base
 
@@ -48,5 +48,5 @@ USER nextjs
 
 EXPOSE 3100
 
-# CMD ["pnpm", "start", "--port=3100", "--hostname=kelvin-zitadel-ui.dev.eight9.net"]
+# CMD ["pnpm", "start", "--port=3100", "--hostname=0.0.0.0"]
 ENTRYPOINT [ "" ]
