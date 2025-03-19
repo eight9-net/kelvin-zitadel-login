@@ -18,6 +18,8 @@ services:
       environment:
         - HOSTNAME=0.0.0.0
         - PORT=3100
+      env_file:
+        - ./apps/login/.env.local
       extra_hosts:
         - kelvin-zitadel.dev.eight9.net:10.0.9.2
       ports:

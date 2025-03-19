@@ -27,7 +27,7 @@ bash:
 	docker-compose exec kauth_app_ui /bin/bash
 
 .PHONY: build
-build: npmbuild buildx
+build: buildx
 	echo "Built"
 
 .PHONY: npmbuild

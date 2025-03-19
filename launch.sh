@@ -6,7 +6,7 @@ echo "ZITADEL_API_URL: ${ZITADEL_API_URL}"
 echo "ZITADEL_SERVICE_USER_ID: ${ZITADEL_SERVICE_USER_ID}"
 
 # Write .env.local
-if [ -d /app/apps/login/ ]; then
+if [ -d /app/apps/login/ ] && [ "$KAUTH_UI_SERVICE_TOKEN" != "" ]; then
   echo "EMAIL_VERIFICATION=false" > /app/apps/login/.env.local
   echo "DEBUG=true" >> /app/apps/login/.env.local
   echo "ZITADEL_API_URL=${ZITADEL_API_URL}" >> /app/apps/login/.env.local
