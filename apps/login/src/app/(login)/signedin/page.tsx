@@ -102,6 +102,11 @@ export default async function Page(props: { searchParams: Promise<any> }) {
 
   const loginNameParam = loginName ?? sessionFactors?.factors?.user?.loginName;
 
+  let is_idp = false;
+  if (sessionFactors?.factors?.intent) {
+    is_idp = true;
+  }
+
   return (
     <DynamicTheme branding={branding}>
       <div className="flex flex-col items-center space-y-4">
@@ -118,7 +123,7 @@ export default async function Page(props: { searchParams: Promise<any> }) {
         />
 
         {sessionFactors?.id && (
-          <SelfServiceMenu sessionId={sessionFactors?.id} canChangePassword={loginSettings?.allowUsernamePassword??false} loginName={loginNameParam} />
+          <SelfServiceMenu sessionId={sessionFactors?.id} canChangePassword={loginSettings?.allowUsernamePassword??false} loginName={loginNameParam} isIdp={is_idp} />
         )}
 
         {loginSettings?.defaultRedirectUri && (

@@ -1,10 +1,10 @@
 import Link from "next/link";
 
-export function SelfServiceMenu({ sessionId, canChangePassword, loginName }: { sessionId: string, canChangePassword: boolean, loginName: string }) {
+export function SelfServiceMenu({ sessionId, canChangePassword, loginName, isIdp }: { sessionId: string, canChangePassword: boolean, loginName: string, isIdp: boolean }) {
   const list: any[] = [];
 
   // if (!!config.selfservice.change_password.enabled) {
-  if (canChangePassword) {
+  if (canChangePassword && !isIdp) {
     list.push({
       link:
         `/password/change?` +
