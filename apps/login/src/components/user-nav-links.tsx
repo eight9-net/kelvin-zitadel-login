@@ -5,7 +5,12 @@ import { getMostRecentSessionCookie } from "@/lib/cookies";
 
 
 export const UserNavLinks = async () => {
-  let session = await getMostRecentSessionCookie();
+  let session = null;
+  try {
+    session = await getMostRecentSessionCookie();
+  } catch (error) {
+    console.error(error);
+  }
 
   if (!session || !session.loginName) {
     return undefined;
