@@ -15,11 +15,19 @@ import {
   getOrgsByDomain,
   listUsers,
   retrieveIDPIntent,
+  addUserGrant,
 } from "@/lib/zitadel";
 import { create } from "@zitadel/client";
 import { AutoLinkingOption } from "@zitadel/proto/zitadel/idp/v2/idp_pb";
 import { OrganizationSchema } from "@zitadel/proto/zitadel/object/v2/object_pb";
-import { AddHumanUserRequestSchema } from "@zitadel/proto/zitadel/user/v2/user_service_pb";
+import {
+  AddHumanUserRequest,
+  AddHumanUserRequestSchema,
+} from "@zitadel/proto/zitadel/user/v2/user_service_pb";
+import {
+  AddUserGrantRequest,
+  AddUserGrantRequestSchema,
+} from "@zitadel/proto/zitadel/management_pb";
 import { getLocale, getTranslations } from "next-intl/server";
 import { headers } from "next/headers";
 
@@ -60,6 +68,8 @@ export default async function Page(props: {
   // sign in user. If user should be linked continue
   if (userId && !link) {
     // TODO: update user if idp.options.isAutoUpdate is true
+
+    // Todo: Update User Project Grants
 
     return loginSuccess(
       userId,
@@ -176,7 +186,7 @@ export default async function Page(props: {
     }
   }
 
-  if (options?.isCreationAllowed && options.isAutoCreation) {
+  if (options?.isAutoCreation) {
     let orgToRegisterOn: string | undefined = organization;
     let newUser;
 
@@ -221,7 +231,36 @@ export default async function Page(props: {
       });
     }
 
+
+    // Automatically Add Grants based on Domain Org & Org Config
     if (newUser) {
+      let grant_data = {};
+      if (process.env.KAUTH_UI_ROLE_MAPS && userData?.username) {
+        const ui_role_maps = JSON.parse(process.env.KAUTH_UI_ROLE_MAPS);
+        const matched = ORG_SUFFIX_REGEX.exec(userData.username);
+        const suffix = matched?.[1] ?? "";
+        if (ui_role_maps.domain_maps[suffix]) {
+          const org_id = ui_role_maps.domain_maps[suffix];
+          grant_data = ui_role_maps.orgs[org_id];
+        }
+      }
+      if (grant_data) {
+        const grant_keys = Object.keys(grant_data);
+        for (const project_key in grant_data) {
+          let gd = grant_data[project_key as keyof typeof grant_data];
+          let req: AddUserGrantRequest = gd;
+          req = create(AddUserGrantRequestSchema, {
+            ...req,
+          });
+          req.userId = newUser.userId;
+          const grant_response = await addUserGrant({
+            serviceUrl,
+            request: req,
+            orgId: orgToRegisterOn ?? ""
+          });
+        }
+      }
+
       return (
         <DynamicTheme branding={branding}>
           <div className="flex flex-col items-center space-y-4">

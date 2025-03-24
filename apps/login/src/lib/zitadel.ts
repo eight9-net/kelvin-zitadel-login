@@ -49,6 +49,13 @@ import { unstable_cacheLife as cacheLife } from "next/cache";
 import { getUserAgent } from "./fingerprint";
 import { createServiceForHost } from "./service";
 
+import {
+  AddUserGrantRequest,
+  AddProjectMemberRequest,
+  AddProjectGrantMemberRequest,
+  ManagementService,
+} from "@zitadel/proto/zitadel/management_pb";
+
 const useCache = process.env.DEBUG !== "true";
 
 async function cacheWrapper<T>(callback: Promise<T>) {
@@ -1428,3 +1435,30 @@ export async function listAuthenticationFactors({
     userId,
   });
 }
+
+
+export async function addUserGrant({
+  serviceUrl,
+  request,
+  orgId,
+}: {
+  serviceUrl: string;
+  request: AddUserGrantRequest;
+  orgId: string;
+}) {
+
+  let ogh = process.env.CUSTOM_REQUEST_HEADERS;
+  let new_head = ogh.split(',');
+  new_head.push(`x-zitadel-orgid: ${orgId}`);
+  process.env.CUSTOM_REQUEST_HEADERS = new_head.join(',');
+
+  const managementService: Client<typeof ManagementService> = await createServiceForHost(
+    ManagementService,
+    serviceUrl,
+  );
+
+  process.env.CUSTOM_REQUEST_HEADERS = ogh;
+
+  return managementService.addUserGrant(request);
+}
+
