@@ -1,13 +1,17 @@
 import { HomeIcon, ArrowRightStartOnRectangleIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
-import { getMostRecentSessionCookie } from "@/lib/cookies";
+import { getMostRecentSessionCookie, getAllSessionCookieIds } from "@/lib/cookies";
 
 
 
 export const UserNavLinks = async () => {
   let session = null;
+  let session_ids = [];
   try {
-    session = await getMostRecentSessionCookie();
+    session_ids = await getAllSessionCookieIds();
+    if (session_ids.length > 0) {
+      session = await getMostRecentSessionCookie();
+    }
   } catch (error) {
     console.error(error);
   }
