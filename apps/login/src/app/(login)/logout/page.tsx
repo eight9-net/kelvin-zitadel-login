@@ -71,6 +71,10 @@ export default async function Page(props: {
       });
   }
 
+  if (!sessions.length) {
+    return redirect('/loginname');
+  }
+
   const branding = await getBrandingSettings({
     serviceUrl,
 

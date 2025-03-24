@@ -10,6 +10,7 @@ import { UserService } from "@zitadel/proto/zitadel/user/v2/user_service_pb";
 import { ReadonlyHeaders } from "next/dist/server/web/spec-extension/adapters/headers";
 import { NextRequest } from "next/server";
 import { systemAPIToken } from "./api";
+import { ManagementService } from "@zitadel/proto/zitadel/management_pb";
 
 type ServiceClass =
   | typeof IdentityProviderService
@@ -18,7 +19,8 @@ type ServiceClass =
   | typeof SessionService
   | typeof OIDCService
   | typeof SettingsService
-  | typeof SAMLService;
+  | typeof SAMLService
+  | typeof ManagementService;
 
 export async function createServiceForHost<T extends ServiceClass>(
   service: T,
