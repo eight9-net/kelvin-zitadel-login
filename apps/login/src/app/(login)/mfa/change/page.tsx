@@ -133,8 +133,6 @@ export default async function Page(props: {
     organization: sessionWithData.factors?.user?.organizationId,
   });
 
-  console.log('AUTH', sessionWithData);
-
   const { valid } = isSessionValid(sessionWithData);
 
   return (
