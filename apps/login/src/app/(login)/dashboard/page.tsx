@@ -93,6 +93,8 @@ export default async function Page(props: { searchParams: Promise<any> }) {
 
   const { loginName, requestId, organization } = searchParams;
 
+  const errorMessage = searchParams?.error;
+
   const sessionFactors = await loadSession(
     serviceUrl,
 
@@ -132,6 +134,8 @@ export default async function Page(props: { searchParams: Promise<any> }) {
           {t("title", { user: sessionFactors?.factors?.user?.displayName })}
         </h1>
         <p className="ztdl-p mb-6 block">{t("description")}</p>
+
+        <p className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">{errorMessage}</p>
 
         <UserAvatar
           loginName={loginName ?? sessionFactors?.factors?.user?.loginName}
