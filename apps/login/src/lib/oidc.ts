@@ -97,7 +97,7 @@ export async function loginWithOIDCandSession({
           error &&
           typeof error === "object" &&
           "code" in error &&
-          error?.code === 9
+          (error?.code === 9 || error?.code === 7)
         ) {
           const loginSettings = await getLoginSettings({
             serviceUrl,
@@ -106,6 +106,12 @@ export async function loginWithOIDCandSession({
 
           if (loginSettings?.defaultRedirectUri) {
             return NextResponse.redirect(loginSettings.defaultRedirectUri);
+          }
+
+          if (error?.code === 7) {
+            const dashboardUrl = constructUrl(request, "/dashboard");
+            dashboardUrl.searchParams.set("error", "You do not have access to the requested App.");
+            return NextResponse.redirect(dashboardUrl);
           }
 
           const signedinUrl = constructUrl(request, "/signedin");
