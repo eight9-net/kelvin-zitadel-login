@@ -1447,7 +1447,7 @@ export async function addUserGrant({
   orgId: string;
 }) {
 
-  let ogh = process.env.CUSTOM_REQUEST_HEADERS;
+  let ogh = process.env.CUSTOM_REQUEST_HEADERS ?? "";
   let new_head = ogh.split(',');
   new_head.push(`x-zitadel-orgid: ${orgId}`);
   process.env.CUSTOM_REQUEST_HEADERS = new_head.join(',');
@@ -1457,8 +1457,11 @@ export async function addUserGrant({
     serviceUrl,
   );
 
+  const ret = managementService.addUserGrant(request);
+
+  if (ogh === "") ogh = "x-foo: bar";
   process.env.CUSTOM_REQUEST_HEADERS = ogh;
 
-  return managementService.addUserGrant(request);
+  return ret;
 }
 
