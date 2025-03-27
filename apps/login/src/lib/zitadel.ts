@@ -1457,7 +1457,7 @@ export async function addUserGrant({
     serviceUrl,
   );
 
-  const ret = managementService.addUserGrant(request);
+  const ret = await managementService.addUserGrant(request);
 
   if (ogh === "") ogh = "x-foo: bar";
   process.env.CUSTOM_REQUEST_HEADERS = ogh;
