@@ -4,6 +4,7 @@ echo "HOSTNAME=${HOSTNAME}"
 echo "PORT=${PORT}"
 echo "ZITADEL_API_URL: ${ZITADEL_API_URL}"
 echo "ZITADEL_SERVICE_USER_ID: ${ZITADEL_SERVICE_USER_ID}"
+echo "KAUTH_UI_ROLE_MAPS: ${KAUTH_UI_ROLE_MAPS}"
 
 # Write .env.local
 if [ -d /app/apps/login/ ] && [ "$KAUTH_UI_SERVICE_TOKEN" != "" ]; then
@@ -12,6 +13,7 @@ if [ -d /app/apps/login/ ] && [ "$KAUTH_UI_SERVICE_TOKEN" != "" ]; then
   echo "ZITADEL_API_URL=${ZITADEL_API_URL}" >> /app/apps/login/.env.local
   echo "ZITADEL_SERVICE_USER_ID=${KAUTH_UI_SERVICE_USER}"  >> /app/apps/login/.env.local
   echo "ZITADEL_SERVICE_USER_TOKEN=\"${KAUTH_UI_SERVICE_TOKEN}\"" >> /app/apps/login/.env.local
+  echo "KAUTH_UI_ROLE_MAPS=\"${KAUTH_UI_ROLE_MAPS}\"" >> /app/apps/login/.env.local
 fi
 
 pnpm start:built -- --port=$PORT --hostname=$HOSTNAME

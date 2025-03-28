@@ -228,12 +228,10 @@ export default async function Page(props: {
       });
     }
 
-    console.log('CREATE', userData);
     const newUser = await addHuman({
       serviceUrl,
       request: userData,
     });
-
 
     // Automatically Add Grants based on Domain Org & Org Config
     if (newUser) {
@@ -247,7 +245,7 @@ export default async function Page(props: {
           grant_data = ui_role_maps.orgs[org_id];
         }
       }
-      console.log('GRANTDATA', grant_data);
+
       if (grant_data) {
         const grant_keys = Object.keys(grant_data);
         for (const project_key in grant_data) {
@@ -257,7 +255,6 @@ export default async function Page(props: {
             ...req,
           });
           req.userId = newUser.userId;
-          console.log('GRANT', {req, orgToRegisterOn});
           const grant_response = await addUserGrant({
             serviceUrl,
             request: req,
