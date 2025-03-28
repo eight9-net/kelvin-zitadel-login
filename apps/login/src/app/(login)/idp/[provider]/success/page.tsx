@@ -70,6 +70,7 @@ export default async function Page(props: {
     // TODO: update user if idp.options.isAutoUpdate is true
 
     // Todo: Update User Project Grants
+    console.log('LOGIN SUCCESS', userId);
 
     return loginSuccess(
       userId,
