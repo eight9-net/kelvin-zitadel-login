@@ -2,6 +2,7 @@
 export function DefaultTags() {
   return (
     <>
+      <title>Kelvin Auth</title>
       <meta name="viewport" content="width=device-width, initial-scale=1" />
       <link
         href="/favicon/apple-touch-icon.png"
