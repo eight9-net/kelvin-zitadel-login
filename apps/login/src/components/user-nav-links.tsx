@@ -25,7 +25,7 @@ export const UserNavLinks = () => {
     };
 
     loadCookies();
-  }, []);
+  }, [loginName]);
 
   if (!session || !session.loginName) {
     return undefined;
