@@ -10,6 +10,8 @@ import {
   getBrandingSettings,
   getLoginSettings,
   getSession,
+  listUserGrants,
+  ListUserMetadata,
 } from "@/lib/zitadel";
 import { create } from "@zitadel/client";
 import {
@@ -19,9 +21,8 @@ import {
 import { CreateResponseRequestSchema } from "@zitadel/proto/zitadel/saml/v2/saml_service_pb";
 import { getLocale, getTranslations } from "next-intl/server";
 import { headers } from "next/headers";
-import Link from "next/link";
 import { redirect } from "next/navigation";
-
+import { UserProjectList } from "@/components/user-project-list";
 
 async function loadSession(
   serviceUrl: string,
@@ -34,41 +35,6 @@ async function loadSession(
     recent = await getMostRecentCookieWithLoginname({ loginName });
   } catch (e) {
     return redirect('loginname');
-  }
-
-  if (requestId && requestId.startsWith("oidc_")) {
-    return createCallback({
-      serviceUrl,
-
-      req: create(CreateCallbackRequestSchema, {
-        authRequestId: requestId,
-        callbackKind: {
-          case: "session",
-          value: create(SessionSchema, {
-            sessionId: recent.id,
-            sessionToken: recent.token,
-          }),
-        },
-      }),
-    }).then(({ callbackUrl }) => {
-      return redirect(callbackUrl);
-    });
-  } else if (requestId && requestId.startsWith("saml_")) {
-    return createResponse({
-      serviceUrl,
-      req: create(CreateResponseRequestSchema, {
-        samlRequestId: requestId.replace("saml_", ""),
-        responseKind: {
-          case: "session",
-          value: {
-            sessionId: recent.id,
-            sessionToken: recent.token,
-          },
-        },
-      }),
-    }).then(({ url }) => {
-      return redirect(url);
-    });
   }
 
   return getSession({
@@ -113,11 +79,14 @@ export default async function Page(props: { searchParams: Promise<any> }) {
   });
 
   const loginNameParam = loginName ?? sessionFactors?.factors?.user?.loginName;
+  const userId         = sessionFactors?.factors?.user.id;
+  const orgId          = sessionFactors?.factors?.user?.organizationId;
+
 
   const loginSettings = await getLoginSettings({
     serviceUrl,
 
-    organization: sessionFactors?.factors?.user?.organizationId,
+    organization: orgId,
   });
 
 
@@ -125,6 +94,27 @@ export default async function Page(props: { searchParams: Promise<any> }) {
   if (sessionFactors?.factors?.intent) {
     is_idp = true;
   }
+
+  // Fetch User's Projects
+  const userProjects = await listUserGrants({
+    serviceUrl,
+    userId: userId,
+    orgId: orgId,
+  });
+  console.log('USER PROJECT GRANTS', userProjects);
+
+  const userMetadata = await ListUserMetadata({
+    serviceUrl,
+    userId: userId,
+  });
+  console.log('USER METADATA', userMetadata);
+
+  if (userMetadata.infinity_instances) {
+    let infinity_instances = JSON.parse(userMetadata.infinity_instances);
+    infinity_instances = infinity_instances.instances;
+    console.log('Infinity Instances', infinity_instances);
+  }
+
 
   return (
     <DynamicTheme branding={branding}>
@@ -147,6 +137,8 @@ export default async function Page(props: { searchParams: Promise<any> }) {
         {sessionFactors?.id && (
           <SelfServiceMenu sessionId={sessionFactors?.id} canChangePassword={loginSettings?.allowUsernamePassword??false} loginName={loginNameParam} isIdp={is_idp} />
         )}
+
+        <UserProjectList projects={userProjects} loginName={loginName ?? sessionFactors?.factors?.user?.loginName} />
 
       </div>
     </DynamicTheme>

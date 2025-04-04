@@ -51,10 +51,14 @@ import { createServiceForHost } from "./service";
 
 import {
   AddUserGrantRequest,
-  AddProjectMemberRequest,
-  AddProjectGrantMemberRequest,
   ManagementService,
+  ListUserMetadataRequest,
+  ListUserMetadataRequestSchema,
 } from "@zitadel/proto/zitadel/management_pb";
+import {
+  UserGrantQuery,
+  UserGrantQuerySchema,
+} from "@zitadel/proto/zitadel/user_pb";
 
 const useCache = process.env.DEBUG !== "true";
 
@@ -1466,3 +1470,104 @@ export async function addUserGrant({
   return ret;
 }
 
+
+export async function listUserGrants({
+  serviceUrl,
+  userId,
+  orgId,
+}: {
+  serviceUrl: string;
+  userId: string;
+  orgId: string;
+}) {
+  const queries: UserGrantQuery[] = [];
+  queries.push(
+    create(UserGrantQuerySchema, {
+      query: {
+        case: "userIdQuery",
+        value: {
+          userId,
+        },
+      },
+    }),
+  );
+
+  let ogh = process.env.CUSTOM_REQUEST_HEADERS ?? "";
+  let new_head = [];
+  if (ogh) ogh.split(',');
+  new_head.push(`x-zitadel-orgid: ${orgId}`);
+  process.env.CUSTOM_REQUEST_HEADERS = new_head.join(',');
+
+  const managementService: Client<typeof ManagementService> = await createServiceForHost(
+    ManagementService,
+    serviceUrl,
+  );
+
+  const ret = await managementService.listUserGrants({ queries });
+
+  if (!ogh) ogh = "x-foo: bar";
+  process.env.CUSTOM_REQUEST_HEADERS = ogh;
+
+  return ret.result;
+}
+
+
+export async function getOrgById({
+  serviceUrl,
+  id,
+}: {
+  serviceUrl: string;
+  id: string;
+}) {
+  const orgService: Client<typeof OrganizationService> =
+    await createServiceForHost(OrganizationService, serviceUrl);
+
+  const ret = await orgService.listOrganizations(
+    {
+      queries: [
+        {
+          query: {
+            case: "idQuery",
+            value: { id },
+          },
+        },
+      ],
+    },
+    {},
+  );
+  return ret.result[0];
+}
+
+
+
+export async function ListUserMetadata({
+  serviceUrl,
+  userId,
+}: {
+  serviceUrl: string;
+  userId: string;
+}) {
+
+  const managementService: Client<typeof ManagementService> = await createServiceForHost(
+    ManagementService,
+    serviceUrl,
+  );
+
+  const res = await managementService.listUserMetadata({id: userId});
+
+  const ret: Record<string, string> = {};
+  for (const kv of res.result) {
+    ret[kv.key] = decodeBase64Uint8ArrayToString(kv.value);
+  }
+  return ret;
+}
+
+function decodeBase64Uint8ArrayToString(base64Uint8: Uint8Array, encoding: string = 'utf-8'): string {
+  try {
+    const decodedString = new TextDecoder(encoding).decode(base64Uint8);
+    return decodedString;
+  } catch (error) {
+    console.error("Error decoding Base64 Uint8Array:", error);
+    return "";
+  }
+}
